@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from app.serializers import UserSerializer,LoginSerializer,GuestSerializer,StatusSerializer
+from app.serializers import UserSerializer,LoginSerializer,GuestSerializer,StatusSerializer,ProfileSerializer
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
@@ -27,7 +27,7 @@ class LoginView(APIView):
             except:
                 return Response({'status':'error','message':'unable to login with provided credential'})
             token,c = Token.objects.get_or_create(user = user)
-            return Response({'status':'success','message':'successfully loggedin','token':token.key})
+            return Response({'status':'success','message':'successfully loggedin','token':token.key,'customer_id':user.id})
         return Response({'status':'errors','message':serializer.errors})
 
 class GuestView(APIView):
@@ -45,9 +45,23 @@ class GuestView(APIView):
         return Response({'status':'errors','message':serializer.errors})
 
 class StatusView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self,request):
         serializer = StatusSerializer(instance = InvitationStatus.objects.all(),many=True)
         return Response({'status': 'success', 'data': serializer.data, 'message': 'all status'})
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        serializer = ProfileSerializer(instance = request.user.profile)
+        return Response({'status':'success','data':serializer.data})
+
+    def patch(self, request):
+        serializer = ProfileSerializer(instance=request.user.profile,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status':'success','data':serializer.data})
+        return Response({'status':'errors','message':serializer.errors})
 
 
 

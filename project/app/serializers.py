@@ -3,6 +3,7 @@ from django.conf import settings
 from app.models import Profile,CustomUser,InvitationStatus,Guest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from PIL import Image
 # User = settings.AUTH_USER_MODEL
 User = get_user_model()
 
@@ -50,5 +51,32 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationStatus
         fields = '__all__'
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        exclude = ['user','created_at','guests']
+
+    def update(self, instance, validated_data):
+        # MANIPULATE DATA HERE BEFORE INSERTION
+
+        instance = super(ProfileSerializer, self).update(instance, validated_data)
+        if instance.profile_pic:
+            image = Image.open(instance.profile_pic)
+            height, width = image.size
+            aspect_ratio = width/height
+            print("image size")
+            print(image.size)
+            if width <= 300:
+                image.close()
+                return instance
+            new_width = 300
+            new_height = new_width/aspect_ratio
+            image = image.resize((new_width,int(new_height)), Image.NEAREST)
+            print("image size")
+            print(image.size)
+            image.save(instance.profile_pic.path)
+            image.close()
+        return instance
 
 
