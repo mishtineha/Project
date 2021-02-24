@@ -45,7 +45,7 @@ class InvitationStatus(models.Model):
 class Guest(models.Model):
     name = models.CharField(max_length = 10)
     email = models.EmailField(unique = True)
-    invitation_status = models.ForeignKey(InvitationStatus,on_delete = models.SET_NULL,null=True)
+    invitation_status = models.ForeignKey(InvitationStatus,on_delete = models.CASCADE)
 
 
 class Profile(models.Model):

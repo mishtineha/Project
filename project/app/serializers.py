@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from app.models import Profile,CustomUser
+from app.models import Profile,CustomUser,InvitationStatus,Guest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 # User = settings.AUTH_USER_MODEL
@@ -33,5 +33,22 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required = True)
     password = serializers.CharField(required=True)
+
+class GuestSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source='invitation_status.status')
+    class Meta:
+        model = Guest
+        fields = ['name','email','status']
+
+    def create(self,validated_data):
+        invitation,c = InvitationStatus.objects.get_or_create(status = validated_data.pop('invitation_status')['status'])
+        guest = Guest.objects.create(name = validated_data['name'],email = validated_data['email'],invitation_status = invitation)
+        return guest
+
+class StatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InvitationStatus
+        fields = '__all__'
 
 
