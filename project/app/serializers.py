@@ -30,4 +30,8 @@ class UserSerializer(serializers.ModelSerializer):
         Profile.objects.create(user = user,name=name,contact_number = phone)
         return user
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required = True)
+    password = serializers.CharField(required=True)
+
 
