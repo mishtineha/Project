@@ -58,8 +58,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         exclude = ['user','created_at','guests']
 
     def update(self, instance, validated_data):
-        # MANIPULATE DATA HERE BEFORE INSERTION
-
         instance = super(ProfileSerializer, self).update(instance, validated_data)
         if instance.profile_pic:
             image = Image.open(instance.profile_pic)
@@ -67,7 +65,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             aspect_ratio = width/height
             print("image size")
             print(image.size)
-            if width <= 300:
+            if width < 300:
                 image.close()
                 return instance
             new_width = 300
