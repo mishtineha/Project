@@ -9,8 +9,12 @@
 
 5.update database credentials in settings.py file
 
-6.now runserver 'python manage.py runserver'
+6.run 'python manage.py makemigrations'
 
-7.go through API.docx to execute APIs 
+7.run 'python manage.py migrate
 
-8.you can execute api through postman or browser
+8. now runserver 'python manage.py runserver'
+
+9.go through API.docx to execute APIs 
+
+10.you can execute api through postman or browser
