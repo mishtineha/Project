@@ -3,7 +3,11 @@
 
 2.download the code
 
-3.create and activate virtual environment ---- optional
+3.create and activate virtual environment write the commands
+             
+             virtualenv virtual    
+             cd virtual
+             scripts\activate
 
 4.go into project folder and type  'pip install -r requirements.txt'
 
